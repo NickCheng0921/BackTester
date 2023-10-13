@@ -23,11 +23,13 @@ function getCookie(cname) {
 	}
 	return "";
 }
-function renderTicker(ticker, html_id) {
+function renderTicker(ticker, html_id, years_ago, months_ago) {
 	$.ajax({
 		url: tickerUrl,
 		method: "POST",
-		data: { 'ticker': ticker },
+		data: { 'ticker': ticker,
+				'years_ago': years_ago,
+				'months_ago': months_ago },
 		success: function(response) {
 			let dP = [];
 			for (let i = 0; i < response['adj_close'].length; i++) {
@@ -35,7 +37,7 @@ function renderTicker(ticker, html_id) {
 				dP.push({x: new Date(response['dates'][i]), y:response['adj_close'][i]})
 			}
 			var chart = new CanvasJS.Chart(html_id, {
-				animationEnabled: true,
+				animationEnabled: false,
 				theme: "light2",
 				backgroundColor: "#2E3440",
 				title:{
@@ -67,26 +69,56 @@ function searchTickers() {
 	searchedTickers = document.getElementById("ticker_input").value.trim().split(" ").filter(o=>o);
 	$('#mainContent').html("");
 	$('#rightContent').html("");
+
+	let years_ago = testFieldForInt('#ticker_search_year', 1);
+	let months_ago = testFieldForInt('#ticker_search_month', 0);
+
 	searchedTickers.forEach(function(tN) {
 		tN = tN.toUpperCase();
 		var newChartDiv = document.createElement("div");
 		newChartDiv.id = "chart"+tN.toString();
 		newChartDiv.classList.add("chart");
 		document.getElementById("mainContent").appendChild(newChartDiv);
-		renderTicker(tN, "chart"+tN.toString());
+		renderTicker(tN, "chart"+tN.toString(), years_ago, months_ago);
 	});
 	setCookie('searchedTickers', JSON.stringify(searchedTickers), exdays=10);
 	currTickers = searchedTickers;
 }
+
+function testFieldForInt(field, def){
+	let fieldVal = $(field).val();
+	let val;
+	if (/^\d+$/.test(fieldVal)) { //regex for int
+		val = parseInt(fieldVal, 10);
+	} else {
+		val = def;
+		$(field).val(val);
+	}
+	return val;
+}
+
 function setupPage() {
 	var previousTickers = getCookie('searchedTickers');
 	if (previousTickers != "") {
 		$('#ticker_input').val(JSON.parse(previousTickers).join(' '));
 	}
+
 	searchTickers();
 
 	// search tickers on enter
     $('#ticker_input').on('keypress', function(event) {
+        if (event.type === 'keypress' && event.which === 13) {
+            searchTickers();
+			$(this).blur(); // this refers to DOM that triggered event, which is input box
+        }
+    });
+    $('#ticker_search_year').on('keypress', function(event) {
+        if (event.type === 'keypress' && event.which === 13) {
+            searchTickers();
+			$(this).blur(); // this refers to DOM that triggered event, which is input box
+        }
+    });
+    $('#ticker_search_month').on('keypress', function(event) {
         if (event.type === 'keypress' && event.which === 13) {
             searchTickers();
 			$(this).blur(); // this refers to DOM that triggered event, which is input box

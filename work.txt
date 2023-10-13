@@ -6,3 +6,7 @@ Current Issues:
 
     Larger Issues
     - disable search and bake while baking
+
+10/13/23
+Default years and month for search exist in dashboard.js parser, and get_data_recent helper
+    - should consolidate to a single config file

@@ -21,7 +21,7 @@ def dashboard():
 @app.route('/ticker/', methods=('POST',))
 def ticker():
     if request.method == "POST":
-        response = hp.get_data_recent(request.form['ticker'], years_ago = 1)
+        response = hp.get_data_recent(request.form['ticker'], request.form['years_ago'], request.form['months_ago'])
         return response
 
 """
