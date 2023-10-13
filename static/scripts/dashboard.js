@@ -84,4 +84,12 @@ function setupPage() {
 		$('#ticker_input').val(JSON.parse(previousTickers).join(' '));
 	}
 	searchTickers();
+
+	// search tickers on enter
+    $('#ticker_input').on('keypress', function(event) {
+        if (event.type === 'keypress' && event.which === 13) {
+            searchTickers();
+			$(this).blur(); // this refers to DOM that triggered event, which is input box
+        }
+    });
 }

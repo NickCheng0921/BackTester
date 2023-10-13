@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
+    <script>
+        var tickerUrl = "{{ url_for('ticker') }}";
+        window.onload =()=> {setupPage()};
+    </script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/dashboard.css') }}">
     <link rel="shortcut icon" href="#" />
 </head>
@@ -23,11 +28,6 @@
                 <input id="ticker_input" value="RIVN" class="formInput">
                 <input id="ticker_submit" type="submit" class="formButtonEnabled" value="Search Tickers" onclick="searchTickers()">
             </div>
-            <script src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
-            <script>
-                var tickerUrl = "{{ url_for('ticker') }}";
-                window.onload =()=> {setupPage()}
-            </script>
             <div id="mainContent"></div>
         </div>
         <div id="rightContent" class="sideright"></div>
